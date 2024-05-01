@@ -2,19 +2,53 @@
 let taskList = JSON.parse(localStorage.getItem("tasks"));
 let nextId = JSON.parse(localStorage.getItem("nextId"));
 
-// Todo: create a function to generate a unique task id
-function generateTaskId() {
+$('#btn-modal').on('click', () => {});
 
+// Todo: create a function to generate a unique task id
+function generateTaskId() { 
+
+        const timestamp = new Date().getTime(); // Get current timestamp
+        const randomNum = Math.floor(Math.random() * 1000); // Generate a random number
+    
+        return `task_${timestamp}_${randomNum}`;      
 }
 
 // Todo: create a function to create a task card
-function createTaskCard(task) {
 
+function createTaskCard(task) {
+    const taskElement = document.createElement('div');
+    taskElement.classList.add('task-card');
+    taskElement.innerHTML = `
+      <div class="col-sm-12 blog-card">
+      <h5>${task.title}</h5>
+       <p class="task-description">${task.description}</p>
+       <p class ="tak-due-date">Posted by:${task.dueDate}</p>
+     </div>
+  `;
+        return taskElement;
 }
 
 // Todo: create a function to render the task list and make cards draggable
 function renderTaskList() {
+    const taskList = document.getElementById('to-do');
 
+    tasks.forEach(task => {
+        const taskCard = createTaskCard();
+        taskCard.setAttribute('draggable', true);
+        taskCard.textContent = task.name;
+        
+        taskCard.addEventListener('dragstart', () => {
+            // Implement drag start logic
+        });
+
+        taskCard.addEventListener('dragend', () => {
+            // Implement drag end logic
+        });
+
+        taskList.appendChild(taskCard);
+    });ß
+
+renderTaskList();
 }
 
 // Todo: create a function to handle adding a new task
