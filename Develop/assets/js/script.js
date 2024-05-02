@@ -37,7 +37,7 @@ function renderTaskList() {
         const taskCard = createTaskCard(task);
         taskCard.setAttribute('draggable', true);
         
-        taskCard.addEventListener('click', (e) => { handleDeleteTask(e); })
+        taskCard.addEventListener('click', (e) => { handleDeleteTask(e, task); })
         taskCard.addEventListener('dragstart', () => {
             // Implement drag start logic
         });
@@ -66,7 +66,7 @@ function handleAddTask(event){
 }
 
 // Todo: create a function to handle deleting a task
-function handleDeleteTask(event){
+function handleDeleteTask(event, task){
     
 }
 
