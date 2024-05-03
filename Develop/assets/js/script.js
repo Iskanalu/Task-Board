@@ -1,15 +1,14 @@
 // Retrieve tasks and nextId from localStorage
 let taskList = JSON.parse(localStorage.getItem("tasks")) || [];
 let nextId = JSON.parse(localStorage.getItem("nextId"));
+renderTaskList();
 
 $('#add-task').on('click', (e) => handleAddTask(e));
 
 // Todo: create a function to generate a unique task id
 function generateTaskId() { 
-
         const timestamp = new Date().getTime(); // Get current timestamp
         const randomNum = Math.floor(Math.random() * 1000); // Generate a random number
-    
         return `task_${timestamp}_${randomNum}`;      
 }
 
@@ -19,7 +18,7 @@ function createTaskCard(task) {
     const taskElement = document.createElement('div');
     taskElement.classList.add('task-card');
     taskElement.innerHTML = `
-      <div class="col-sm-12 blog-card">
+      <div class="col-sm-12 blog-card" id="${task.title}">
       <h5>${task.title}</h5>
        <p class="task-description">${task.description}</p>
        <p class ="tak-due-date">Posted by:${task.dueDate}</p>
@@ -32,7 +31,6 @@ function createTaskCard(task) {
 // Todo: create a function to render the task list and make cards draggable
 function renderTaskList() {
     const todo = document.getElementById('todo-cards');
-    console.log('rendering tasks  >', taskList);
     taskList.forEach((task) => {
         const taskCard = createTaskCard(task);
         taskCard.setAttribute('draggable', true);
@@ -59,15 +57,20 @@ function handleAddTask(event){
         description: $('#taskDescription').val()
     };
     taskList.push(task);
-    console.log('adding task  >', taskList);
     localStorage.setItem("tasks",JSON.stringify(taskList));
     $('#moda-close-btn').click();
-    renderTaskList();
+    const taskCard = createTaskCard(task);
+    $('#todo-cards').append(taskCard);
 }
 
 // Todo: create a function to handle deleting a task
 function handleDeleteTask(event, task){
-    
+    event.preventDefault();
+    taskList = taskList.filter(function(t) {
+        return t.title !== task.title; 
+    });
+    localStorage.setItem("tasks",JSON.stringify(taskList));
+    $(`#${task.title}`).remove();
 }
 
 // Todo: create a function to handle dropping a task into a new status lane
