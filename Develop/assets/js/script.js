@@ -1,6 +1,44 @@
 // Retrieve tasks and nextId from localStorage
 let taskList = JSON.parse(localStorage.getItem("tasks")) || [];
 let nextId = JSON.parse(localStorage.getItem("nextId"));
+let dragged = null;
+const todo = document.getElementById("todo-cards");
+todo.addEventListener("dragover", (event) => {
+  event.preventDefault();
+});
+const inProgress = document.getElementById("in-progress-cards");
+inProgress.addEventListener("dragover", (event) => {
+  event.preventDefault();
+});
+const done = document.getElementById("done-cards");
+done.addEventListener("dragover", (event) => {
+  event.preventDefault();
+});
+
+todo.addEventListener("drop", (event) => {
+    event.preventDefault();
+    if (event.target.id === "todo-cards") {
+      dragged.parentNode.removeChild(dragged);
+      event.target.appendChild(dragged);
+    }
+  });
+
+  inProgress.addEventListener("drop", (event) => {
+    event.preventDefault();
+    if (event.target.id === "in-progress-cards") {
+      dragged.parentNode.removeChild(dragged);
+      event.target.appendChild(dragged);
+    }
+  });
+
+  done.addEventListener("drop", (event) => {
+    event.preventDefault();
+    if (event.target.id === "done-cards") {
+      dragged.parentNode.removeChild(dragged);
+      event.target.appendChild(dragged);
+    }
+  });
+  
 renderTaskList();
 
 $('#add-task').on('click', (e) => handleAddTask(e));
@@ -36,12 +74,8 @@ function renderTaskList() {
         taskCard.setAttribute('draggable', true);
         
         taskCard.addEventListener('click', (e) => { handleDeleteTask(e, task); })
-        taskCard.addEventListener('dragstart', () => {
-            // Implement drag start logic
-        });
-
-        taskCard.addEventListener('dragend', () => {
-            // Implement drag end logic
+        taskCard.addEventListener('dragstart', (event) => {
+            dragged = event.target;
         });
 
         todo.appendChild(taskCard);
@@ -60,7 +94,10 @@ function handleAddTask(event){
     localStorage.setItem("tasks",JSON.stringify(taskList));
     $('#moda-close-btn').click();
     const taskCard = createTaskCard(task);
-    $('#todo-cards').append(taskCard);
+    $('#todo-cards').append(taskCard);      
+     taskCard.addEventListener('dragstart', (event) => {
+        dragged = event.target;
+    });
 }
 
 // Todo: create a function to handle deleting a task
