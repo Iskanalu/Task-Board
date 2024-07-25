@@ -31,6 +31,15 @@ body {
   margin: 0 auto;
 }
 
+.blog-card {
+  border: #2196F3 1px solid;
+  border-radius: 5px;
+  padding: 8px 0;
+  background: lightgrey;
+  margin: 5px;
+  box-shadow: 10px 5px 5px #8a8a8a;
+}
+
 .task-card:hover {
   cursor: grab;
 }

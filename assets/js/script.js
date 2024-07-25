@@ -55,59 +55,62 @@ function generateTaskId() {
 function createTaskCard(task) {
     const taskElement = document.createElement('div');
     taskElement.classList.add('task-card');
+    
+    taskElement.setAttribute('id', `${task.id}`);
     taskElement.innerHTML = `
-      <div class="col-sm-12 blog-card" id="${task.title}">
+      <div class="col-sm-12 blog-card">
       <h5>${task.title}</h5>
        <p class="task-description">${task.description}</p>
        <p class ="tak-due-date">Posted by:${task.dueDate}</p>
        <button type="button" class="btn btn-danger">Delete</button>
      </div>
   `;
-        return taskElement;
+  return taskElement;
 }
 
 // Todo: create a function to render the task list and make cards draggable
 function renderTaskList() {
-    const todo = document.getElementById('todo-cards');
     taskList.forEach((task) => {
-        const taskCard = createTaskCard(task);
-        taskCard.setAttribute('draggable', true);
-        
-        taskCard.addEventListener('click', (e) => { handleDeleteTask(e, task); })
-        taskCard.addEventListener('dragstart', (event) => {
-            dragged = event.target;
-        });
-
-        todo.appendChild(taskCard);
+      renderSingleTask(task);
     });
+}
+
+function renderSingleTask(task) {
+  const taskCard = createTaskCard(task);
+  taskCard.setAttribute('draggable', true);
+  
+  taskCard.getElementsByTagName('button')[0].addEventListener('click', (e) => { handleDeleteTask(e, task); })
+  taskCard.addEventListener('dragstart', (event) => {
+    dragged = event.target;
+  });
+  $('#todo-cards').append(taskCard);
 }
 
 // Todo: create a function to handle adding a new task
 function handleAddTask(event){
     event.preventDefault();
+    const title = $('#taskTitle').val();
     const task = {
-        title: $('#taskTitle').val(),
+        title,
         dueDate: $('#taskDuedate').val(),
-        description: $('#taskDescription').val()
+        description: $('#taskDescription').val(),
+        id: `${title.replace(/ /g, '_')}-${taskList?.length}`
     };
     taskList.push(task);
     localStorage.setItem("tasks",JSON.stringify(taskList));
     $('#moda-close-btn').click();
     const taskCard = createTaskCard(task);
-    $('#todo-cards').append(taskCard);      
-     taskCard.addEventListener('dragstart', (event) => {
-        dragged = event.target;
-    });
+    renderSingleTask(taskCard);
 }
 
 // Todo: create a function to handle deleting a task
 function handleDeleteTask(event, task){
     event.preventDefault();
     taskList = taskList.filter(function(t) {
-        return t.title !== task.title; 
+        return t.id !== task.id; 
     });
     localStorage.setItem("tasks",JSON.stringify(taskList));
-    $(`#${task.title}`).remove();
+    $(`#${task.id}`).remove();
 }
 
 // Todo: create a function to handle dropping a task into a new status lane
