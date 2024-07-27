@@ -27,7 +27,7 @@ THEN the list of project tasks is displayed in columns representing the task pro
 
 ## Assets
 
-![The following animation demonstrates the application functionality](./Develop/assets/100-third-party-apis-homework-demo.gif)
+![The following animation demonstrates the application functionality](./assets/100-third-party-apis-homework-demo.gif)
 
 
 © 2024 edX Boot Camps LLC. Confidential and Proprietary. All Rights Reserved.

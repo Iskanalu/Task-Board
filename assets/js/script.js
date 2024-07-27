@@ -17,25 +17,28 @@ done.addEventListener("dragover", (event) => {
 
 todo.addEventListener("drop", (event) => {
     event.preventDefault();
-    if (event.target.id === "todo-cards") {
+    if (event.target.closest("#todo-cards")) {
       dragged.parentNode.removeChild(dragged);
-      event.target.appendChild(dragged);
+      dragged.querySelector('.blog-card')?.classList?.remove('done');
+      event.target.closest("#todo-cards").appendChild(dragged);
     }
   });
 
   inProgress.addEventListener("drop", (event) => {
     event.preventDefault();
-    if (event.target.id === "in-progress-cards") {
+    if (event.target.closest("#in-progress-cards")) {
       dragged.parentNode.removeChild(dragged);
-      event.target.appendChild(dragged);
+      dragged.querySelector('.blog-card')?.classList?.remove('done');
+      event.target.closest("#in-progress-cards").appendChild(dragged);
     }
   });
 
   done.addEventListener("drop", (event) => {
     event.preventDefault();
-    if (event.target.id === "done-cards") {
+    if (event.target.closest("#done-cards")) {
       dragged.parentNode.removeChild(dragged);
-      event.target.appendChild(dragged);
+      dragged.querySelector('.blog-card')?.classList?.add('done');
+      event.target.closest("#done-cards").appendChild(dragged);
     }
   });
   
@@ -58,7 +61,7 @@ function createTaskCard(task) {
     
     taskElement.setAttribute('id', `${task.id}`);
     taskElement.innerHTML = `
-      <div class="col-sm-12 blog-card">
+      <div class="col-sm-12 blog-card ${task.status}">
       <h5>${task.title}</h5>
        <p class="task-description">${task.description}</p>
        <p class ="tak-due-date">Posted by:${task.dueDate}</p>
@@ -71,15 +74,15 @@ function createTaskCard(task) {
 // Todo: create a function to render the task list and make cards draggable
 function renderTaskList() {
     taskList.forEach((task) => {
-      renderSingleTask(task);
+      const taskCard = createTaskCard(task);
+      renderSingleTask(taskCard, task.id);
     });
 }
 
-function renderSingleTask(task) {
-  const taskCard = createTaskCard(task);
+function renderSingleTask(taskCard, taskId) {
   taskCard.setAttribute('draggable', true);
   
-  taskCard.getElementsByTagName('button')[0].addEventListener('click', (e) => { handleDeleteTask(e, task); })
+  taskCard.getElementsByTagName('button')[0].addEventListener('click', (e) => { handleDeleteTask(e, taskId); })
   taskCard.addEventListener('dragstart', (event) => {
     dragged = event.target;
   });
@@ -90,27 +93,37 @@ function renderSingleTask(task) {
 function handleAddTask(event){
     event.preventDefault();
     const title = $('#taskTitle').val();
+    const dueDate =  $('#taskDuedate').val();
+
+    if (!dueDate || !title) {
+      alert('due date and title is required, please fill in the values');
+    }
+    const currentDate = new Date(new Date().getUTCFullYear(), new Date().getUTCMonth(), new Date().getDate());
+    const userDueDate = new Date(new Date(dueDate).getUTCFullYear(), new Date(dueDate).getUTCMonth(), new Date(dueDate).getUTCDate());
+
     const task = {
         title,
-        dueDate: $('#taskDuedate').val(),
+        dueDate,
         description: $('#taskDescription').val(),
-        id: `${title.replace(/ /g, '_')}-${taskList?.length}`
+        id: `${title.replace(/ /g, '_')}-${taskList?.length}`,
+        status: userDueDate < currentDate ?
+         'overdue' : currentDate === userDueDate ? 'deadline' : 'none'
     };
     taskList.push(task);
     localStorage.setItem("tasks",JSON.stringify(taskList));
     $('#moda-close-btn').click();
     const taskCard = createTaskCard(task);
-    renderSingleTask(taskCard);
+    renderSingleTask(taskCard, task.id);
 }
 
 // Todo: create a function to handle deleting a task
-function handleDeleteTask(event, task){
+function handleDeleteTask(event, taskId) {
     event.preventDefault();
     taskList = taskList.filter(function(t) {
-        return t.id !== task.id; 
+        return t.id !== taskId; 
     });
     localStorage.setItem("tasks",JSON.stringify(taskList));
-    $(`#${task.id}`).remove();
+    $(`#${taskId}`).remove();
 }
 
 // Todo: create a function to handle dropping a task into a new status lane

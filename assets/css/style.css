@@ -14,6 +14,18 @@ body {
   height: 500px;
 }
 
+.blog-card.overdue {
+  background-color: rgb(138, 46, 46);
+}
+
+.blog-card.deadline {
+ background-color: rgb(175, 175, 32);
+}
+
+.blog-card.done {
+  background-color: green !important;
+}
+
 
 .dropzone {
   width: 200px;
